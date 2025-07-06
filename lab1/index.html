@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>C Calculators with JS</title>
+</head>
+<body style="background-color: #424242; font-family: 'Oswald'; color: #ffffff;"><center>
+    
+    </br></br>
+    
+  <h1>Temperature Converter</h1>
+  <input id="celsiusInput" type="number" step="0.1" placeholder="in celsius">
+  <button onclick="convertTemp()">Convert</button>
+  <pre id="tempOutput"></pre>
+  
+  </br></br></br></br>
+
+  <h1>Circle Calculator</h1>
+  <input id="radiusInput" type="number" step="0.1" placeholder="a radius">
+  <button onclick="calcCircle()">Calculate</button>
+  <pre id="circleOutput"></pre>
+  
+  </br></br></br></br>
+  
+  <h1>'Average de Trois' Calculator</h1>
+  <input id="firstInput" type="number" step="0.1" placeholder="first number">
+  <input id="nextInput" type="number" step="0.1" placeholder="second number">
+  <input id="lastInput" type="number" step="0.1" placeholder="third number">
+  <button onclick="calcAverage()">Calculate</button>
+  <pre id="averageOutput"></pre>
+        
+        </br></br></br></br>
+        
+    <h1>Final Grade Calculator</h1>
+    <h5>    Default Weights: grade 1 is 20%, grade 2 is 30%, grade 3 is 50% </h5>
+    <input id="firstFinal" type="number" step="0.1" placeholder="first percent">
+    <input id="nextFinal" type="number" step="0.1" placeholder="second percent">
+    <input id="lastFinal" type="number" step="0.1" placeholder="third percent">
+    <button onclick="calcFinal()">Calculate</button>
+    <pre id="finalOutput"></pre>
+
+    </br></br></br></br>
+    
+    <h1>Final Grade by 50 Calculator</h1>
+    <h5>    Default Weights: grade 1 is 20%, grade 2 is 30%, grade 3 is 50% </h5>
+    <input id="firstFinalF" type="number" step="0.1" max="50" placeholder="first out of 50">
+    <input id="nextFinalF" type="number" step="0.1" max="50" placeholder="second out of 50">
+    <input id="lastFinalF" type="number" step="0.1" max="50" placeholder="third out of 50">
+    <button onclick="calcFinalF()">Calculate</button>
+    <pre id="finalFOutput"></pre>
+    
+    </br></br></br></br>
+
+  <script>
+    var Module = {
+      print: () => {}, // disable Emscripten console print
+      onRuntimeInitialized: function () {
+        document.querySelectorAll("button").forEach(btn => btn.disabled = false);
+      }
+    };
+
+    function convertTemp() {
+      const celsius = parseFloat(document.getElementById("celsiusInput").value);
+      const ptr = Module.ccall("temperatureConverter", "number", ["number"], [celsius]);
+      const result = Module.UTF8ToString(ptr);
+      document.getElementById("tempOutput").textContent = result;
+    }
+
+    function calcCircle() {
+      const radius = parseFloat(document.getElementById("radiusInput").value);
+      const ptr = Module.ccall("areaOfCircle", "number", ["number"], [radius]);
+      const result = Module.UTF8ToString(ptr);
+      document.getElementById("circleOutput").textContent = result;
+    }
+      
+    function calcAverage() {
+        const first = parseFloat(document.getElementById("firstInput").value);
+        const next = parseFloat(document.getElementById("nextInput").value);
+        const last = parseFloat(document.getElementById("lastInput").value);
+        const ptr = Module.ccall("averageOfThree", "number", ["number", "number", "number"], [first, next, last]);
+        const result = Module.UTF8ToString(ptr);
+        document.getElementById("averageOutput").textContent = result;
+    }
+        
+    function calcFinal() {
+        const first = parseFloat(document.getElementById("firstFinal").value);
+        const next = parseFloat(document.getElementById("nextFinal").value);
+        const last = parseFloat(document.getElementById("lastFinal").value);
+        const ptr = Module.ccall("finalGrade", "number", ["number", "number", "number"], [first, next, last]);
+        const result = Module.UTF8ToString(ptr);
+        document.getElementById("finalOutput").textContent = result;
+    }
+            
+    function calcFinalF() {
+        const first = parseFloat(document.getElementById("firstFinalF").value);
+        const next = parseFloat(document.getElementById("nextFinalF").value);
+        const last = parseFloat(document.getElementById("lastFinalF").value);
+        if (first > 50 || next > 50 || last > 50) {
+            document.getElementById("finalFOutput").textContent = "Each mark must be 50 or less.";
+            return;
+          }
+        const ptr = Module.ccall("finalGrade50", "number", ["number", "number", "number"], [first, next, last]);
+        const result = Module.UTF8ToString(ptr);
+        document.getElementById("finalFOutput").textContent = result;
+    }
+  
+  </script>
+
+  <!-- Must come after Module is defined -->
+  <script src="main.js"></script>
+</center></body>
+<footer> <center><a href="https://www.moonybuilder.com/" style="text-decoration: none; font-family: 'arial'; color: #ffffff;"> a moonybuilder site </a></center> </footer>
+</html>
